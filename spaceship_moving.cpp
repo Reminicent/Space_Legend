@@ -1,14 +1,16 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include <iostream>
+#include <bits/stdc++.h>
+#include "spaceship_bullet_1.h"
+#include "spaceship_moving.h"
+#include "Wave1_create.h"
 
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 
-bool IsMouseInsideSquare(int mouseX, int mouseY, int squareX, int squareY, int squareSize) {
-    return (mouseX >= squareX && mouseX <= squareX + squareSize &&
-            mouseY >= squareY && mouseY <= squareY + squareSize);
-}
+int spaceship_x = 800,spaceship_y=660, spaceship_size=100, spaceship_HP = 1000;
+int bullet_x = (2*spaceship_x+spaceship_size)/2, bullet_size = spaceship_size;   float bullet_y = (float)spaceship_y-spaceship_size/2, bullet_damage = 100;  float bullet_speed = 0.5;
+
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -16,31 +18,12 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     IMG_Init(IMG_INIT_PNG);
 
-    SDL_Surface* squareSurface = IMG_Load("C:/Users/Tran Dai Nghia/Desktop/Space Legend/Image/Spaceship/Ship5.png");
-    if (!squareSurface) {
-        std::cerr << "Failed to load square image: " << IMG_GetError() << std::endl;
-        return 1;
-
-    }
-    SDL_Surface* bulletSurface = IMG_Load("C:/Users/Tran Dai Nghia/Desktop/Space Legend/Image/Bullet/Bullet5.png");
-    if (!bulletSurface) {
-        std::cerr << "Failed to load square image: " << IMG_GetError() << std::endl;
-        return 1;
-    }
-
-    SDL_Texture* squareTexture = SDL_CreateTextureFromSurface(renderer, squareSurface);
-    SDL_FreeSurface(squareSurface);
-
-    SDL_Texture* bulletTexture = SDL_CreateTextureFromSurface(renderer, bulletSurface);
-    SDL_FreeSurface(bulletSurface);
-
-    int squareX = 800,newSquareX;
-    int squareY = 660,newSquareY;
-    int mouseX = 0;
-    int mouseY = 0;
-    bool mousePressed = false;
-    int squareSize = 100,XBullet=(2*squareX+squareSize)/2;
-    float YBullet=squareY-squareSize/2;
+    Spaceship spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
+    spaceship.setScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    Bullet bullet1(renderer, "Bullet5.png", bullet_x, bullet_y ,bullet_size, bullet_size,bullet_damage, bullet_speed);
+    EnemyShip enemyship1(renderer, "Ship3.png","Bullet3.png");
+    enemyship1.setScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    enemyship1.create_enemyship_position();
 
     bool quit = false;
     SDL_Event event;
@@ -48,43 +31,23 @@ int main(int argc, char* argv[]) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = true;
-            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
-                SDL_GetMouseState(&mouseX, &mouseY);
-                if (IsMouseInsideSquare(mouseX, mouseY, squareX, squareY, squareSize)) {
-                    mousePressed = true;
-                }
-            } else if (event.type == SDL_MOUSEBUTTONUP) {
-                mousePressed = false;
-            } else if (event.type == SDL_MOUSEMOTION && mousePressed) {
-                SDL_GetMouseState(&mouseX, &mouseY);
-                 newSquareX = mouseX - squareSize / 2;
-                 newSquareY = mouseY - squareSize / 2;
-
+            } else {
+                spaceship.handleEvent(event);
             }
-
-                if (newSquareX >= 0 && newSquareY >= 0 && newSquareX + squareSize <= SCREEN_WIDTH && newSquareY + squareSize <= SCREEN_HEIGHT&& newSquareY >= SCREEN_HEIGHT/2)
-                    if(newSquareX - squareSize < squareX&&newSquareY - squareSize < squareY&&squareX - squareSize < newSquareX&&squareY - squareSize < newSquareY){
-                    squareX = newSquareX;
-                    squareY = newSquareY;
-                }
         }
         SDL_RenderClear(renderer);
+        spaceship.render(renderer);
 
-        SDL_Rect squareRect = {squareX, squareY, squareSize, squareSize};
-        SDL_RenderCopy(renderer, squareTexture, NULL, &squareRect);
-
-        YBullet-=1;
-        if (YBullet < 0){YBullet = squareY-squareSize/2; XBullet=(2*squareX+squareSize)/2;}
-        SDL_Rect Bullet = {XBullet, YBullet, squareSize/5, squareSize};
-        SDL_RenderCopy(renderer, bulletTexture, NULL, &Bullet);
+        spaceship_x=spaceship.updateX();    spaceship_y=spaceship.updateY();
+        bullet1.get_spaceship_static(spaceship_x, spaceship_y);
+        bullet1.handleEvent(event);
+        bullet1.render(renderer);
+        enemyship1.render(renderer);
 
         SDL_RenderPresent(renderer);
     }
 
-    SDL_DestroyTexture(squareTexture);
-    SDL_DestroyTexture(bulletTexture);
     IMG_Quit();
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
