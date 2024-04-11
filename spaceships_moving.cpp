@@ -3,7 +3,8 @@
 #include <SDL_image.h>
 #include <iostream>
 
-Spaceship::Spaceship(SDL_Renderer* renderer, const std::string& imagePath, int x, int y, int s,int s1,int HP) {
+Spaceship::Spaceship(){}
+void Spaceship::Create_Spaceship(SDL_Renderer* renderer, const std::string& imagePath, int x, int y, int s,int s1,int HP) {
     SDL_Surface* surface = IMG_Load(imagePath.c_str());
     if (!surface) {
         std::cerr << "Failed to load spaceship image: " << IMG_GetError() << std::endl;

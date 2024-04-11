@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="spaceship_moving" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/spaceship_moving" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/spaceship_moving" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="Background.cpp" />
+		<Unit filename="Background.h" />
+		<Unit filename="Background_music.cpp" />
+		<Unit filename="Background_music.h" />
+		<Unit filename="Initial_Interface.cpp" />
+		<Unit filename="Initial_Interface.h" />
+		<Unit filename="Space_Legend.cpp" />
+		<Unit filename="Wave1_attack.cpp" />
+		<Unit filename="Wave1_attack.h" />
+		<Unit filename="Wave1_create.cpp" />
+		<Unit filename="Wave1_create.h" />
+		<Unit filename="global_variable.h" />
+		<Unit filename="instructions_music.cpp" />
+		<Unit filename="instructions_music.h" />
+		<Unit filename="spaceship_bullet_1.h" />
+		<Unit filename="spaceship_hp.cpp" />
+		<Unit filename="spaceship_hp.h" />
+		<Unit filename="spaceship_moving.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="spaceships_bullet_1.cpp" />
+		<Unit filename="spaceships_moving.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,139 @@
+# depslib dependency file v1.0
+1710238543 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\main.cpp
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1712657072 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceship_moving.cpp
+	<SDL.h>
+	<SDL_image.h>
+	<bits/stdc++.h>
+	<vector>
+	"spaceship_bullet_1.h"
+	"spaceship_moving.h"
+	"Wave1_create.h"
+	"Background.h"
+	"Inital_Interface.h"
+
+1712848689 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceship_bullet_1.h
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1712848778 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceship_moving.h
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1712848703 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceships_bullet_1.cpp
+	"spaceship_bullet_1.h"
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1712848746 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceships_moving.cpp
+	"spaceship_moving.h"
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1712849014 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\wave1_create.cpp
+	"Wave1_create.h"
+	<bits/stdc++.h>
+	<vector>
+
+1712848963 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\wave1_create.h
+	<SDL.h>
+	<SDL_image.h>
+	<bits/stdc++.h>
+
+1712649323 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\background.cpp
+	"Background.h"
+	<SDL_image.h>
+	<iostream>
+
+1712649265 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\background.h
+	<SDL.h>
+	<string>
+
+1712713113 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\inital_interface.cpp
+	"Inital_Interface.h"
+	"instructions_music.h"
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<bits/stdc++.h>
+
+1712657227 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\inital_interface.h
+	<SDL.h>
+	<SDL_image.h>
+
+1712848997 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\space_legend.cpp
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<bits/stdc++.h>
+	<vector>
+	"spaceship_bullet_1.h"
+	"spaceship_moving.h"
+	"Wave1_create.h"
+	"Background.h"
+	"Initial_Interface.h"
+	"Background_music.h"
+	"global_variable.h"
+	"spaceship_hp.h"
+
+1712671582 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\background_music.cpp
+	"Background_music.h"
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+
+1712671582 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\background_music.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+
+1712712733 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\instructions_music.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+
+1712712733 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\instructions_music.cpp
+	"instructions_music.h"
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+
+1712830367 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\global_variable.h
+
+1712721598 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\initial_interface.cpp
+	"Initial_Interface.h"
+	"instructions_music.h"
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<bits/stdc++.h>
+
+1712721598 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\initial_interface.h
+	<SDL.h>
+	<SDL_image.h>
+
+1712827470 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceship_hp.cpp
+	"spaceship_hp.h"
+	<SDL.h>
+	<SDL_image.h>
+	<bits/stdc++.h>
+
+1712826957 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\spaceship_hp.h
+	<SDL.h>
+
+1712848287 source:c:\users\tran dai nghia\desktop\space legend\spaceship_moving\wave1_attack.cpp
+	"spaceship_bullet_1.h"
+	"spaceship_moving.h"
+	"spaceship_hp.h"
+	"Wave1_create.h"
+	"Wave1_attack.h"
+
+1712844926 c:\users\tran dai nghia\desktop\space legend\spaceship_moving\wave1_attack.h
+

@@ -1,0 +1,94 @@
+#include <SDL.h>
+#include <SDL_image.h>
+#include <iostream>
+
+const int SCREEN_WIDTH = 1600;
+const int SCREEN_HEIGHT = 900;
+
+bool IsMouseInsideSquare(int mouseX, int mouseY, int squareX, int squareY, int squareSize) {
+    return (mouseX >= squareX && mouseX <= squareX + squareSize &&
+            mouseY >= squareY && mouseY <= squareY + squareSize);
+}
+
+int main(int argc, char* argv[]) {
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Window* window = SDL_CreateWindow("Spaceship_moving", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    IMG_Init(IMG_INIT_PNG);
+
+    SDL_Surface* squareSurface = IMG_Load("C:/Users/Tran Dai Nghia/Desktop/Space Legend/Image/Spaceship/Ship5.png");
+    if (!squareSurface) {
+        std::cerr << "Failed to load square image: " << IMG_GetError() << std::endl;
+        return 1;
+
+    }
+    SDL_Surface* bulletSurface = IMG_Load("C:/Users/Tran Dai Nghia/Desktop/Space Legend/Image/Bullet/Bullet5.png");
+    if (!bulletSurface) {
+        std::cerr << "Failed to load square image: " << IMG_GetError() << std::endl;
+    return 1;
+    }
+
+    SDL_Texture* squareTexture = SDL_CreateTextureFromSurface(renderer, squareSurface);
+    SDL_FreeSurface(squareSurface);
+
+    SDL_Texture* bulletTexture = SDL_CreateTextureFromSurface(renderer, bulletSurface);
+    SDL_FreeSurface(bulletSurface);
+
+    int squareX = 800,newSquareX;
+    int squareY = 660,newSquareY;
+    int mouseX = 0;
+    int mouseY = 0;
+    bool mousePressed = false;
+    int squareSize = 100;
+    int XBullet=(2*squareX+squareSize)/2;
+    float YBullet=squareY-squareSize/2;
+
+    bool quit = false;
+    SDL_Event event;
+    while (!quit) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                quit = true;
+            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                SDL_GetMouseState(&mouseX, &mouseY);
+                if (IsMouseInsideSquare(mouseX, mouseY, squareX, squareY, squareSize)) {
+                    mousePressed = true;
+                }
+            } else if (event.type == SDL_MOUSEBUTTONUP) {
+                mousePressed = false;
+            } else if (event.type == SDL_MOUSEMOTION && mousePressed) {
+                SDL_GetMouseState(&mouseX, &mouseY);
+                 newSquareX = mouseX - squareSize / 2;
+                 newSquareY = mouseY - squareSize / 2;
+
+            }
+
+                if (newSquareX >= 0 && newSquareY >= 0 && newSquareX + squareSize <= SCREEN_WIDTH && newSquareY + squareSize <= SCREEN_HEIGHT&& newSquareY >= SCREEN_HEIGHT/2)
+                    if(newSquareX - squareSize < squareX&&newSquareY - squareSize < squareY&&squareX - squareSize < newSquareX&&squareY - squareSize < newSquareY){
+                    squareX = newSquareX;
+                    squareY = newSquareY;
+                }
+        }
+        SDL_RenderClear(renderer);
+
+        SDL_Rect squareRect = {squareX, squareY, squareSize, squareSize};
+        SDL_RenderCopy(renderer, squareTexture, NULL, &squareRect);
+
+        YBullet-=1;
+        if (YBullet < 0){YBullet = squareY-squareSize/2; XBullet=(2*squareX+squareSize)/2;}
+        SDL_Rect Bullet = {XBullet, YBullet, squareSize/5, squareSize};
+        SDL_RenderCopy(renderer, bulletTexture, NULL, &Bullet);
+
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_DestroyTexture(squareTexture);
+    SDL_DestroyTexture(bulletTexture);
+    IMG_Quit();
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    return 0;
+}

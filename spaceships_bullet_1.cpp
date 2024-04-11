@@ -3,7 +3,8 @@
 #include <SDL_image.h>
 #include <iostream>
 
-Bullet::Bullet(SDL_Renderer* renderer, const std::string& imagePath, int x, float y, int s,int s1,int damage, float speed) {
+Bullet::Bullet(){}
+void Bullet::Create_Bullet(SDL_Renderer* renderer, const std::string& imagePath, int x, float y, int s,int s1,int damage, float speed) {
     SDL_Surface* surface = IMG_Load(imagePath.c_str());
     if (!surface) {
         std::cerr << "Failed to load bullet image: " << IMG_GetError() << std::endl;
