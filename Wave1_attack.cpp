@@ -5,51 +5,73 @@
 #include "Wave1_create.h"
 #include "Wave1_attack.h"
 
-int enemy_Health[28];
-SDL_Rect enemyship_wave1_Rect[28];
+//int spaceship_x,spaceship_y,bullet_x;
+//float bullet_y,speed;
+Bullet bullet1;
+EnemyShip Wave1Create;
 
 Wave1Attack::Wave1Attack(){}
 Wave1Attack::~Wave1Attack(){}
-void Wave1Attack::handleEvent(SDL_Event& event) {
-    Bullet bullet1;
-    while(shipnum>0)
-    {
-       bullet_y-=speed;
-       for(int i=1;i<=9;i++)
+void Wave1Attack::get_static(int sx,int sy,int bx, int dam, float by, float speed, int health[],SDL_Rect enemyrect[])
+{
+    this->sx = sx;
+    this->sy = sy;
+    this->bx = bx;
+    this->by = by;
+    this->dam = dam;
+    this->speed = speed;
+    //for(int i=19;i<=27;i++)std::cout<<enemy_Health[i]<<' ';     std::cout<<std::endl;
+    for(int i=1;i<=27;i++)this -> health[i] = health[i];
+    for(int i=1;i<=27;i++){this ->enemyrect[i] = enemyrect[i];}
+    //for(int i=19;i<=27;i++)std::cout<<health[i]<<' ';     std::cout<<std::endl;
+}
+void Wave1Attack::get_changed_static(int health[])
+{
+    for(int i=1;i<=27;i++)this -> health[i] = health[i];
+}
+void Wave1Attack::handleEvent(float by) {
+    //while(shipnum>0)
+    //{
+       //by-=speed;
+       //bullet1.handleEvent(by,speed);
+       //std::cout<<by<<' ';     std::cout<<std::endl;
+       for(int i=1;i<=27;i++)
        {
-         if(bullet_x>=enemyship_wave1_Rect[i].x&&bullet_x<=enemyship_wave1_Rect[i].x+120)
-            if(enemy_Health[2*9+i]>0)
+         if(bx>=enemyrect[i].x&&bx<=enemyrect[i].x+120)
+            if(health[2*9+i]>0)
             {
-                if(bullet_Y==enemyship_wave1_Rect[i].y+120)
+                if(by==enemyrect[i].y+120)
                 {
-                        if(enemy_Health[18+i]>enemy_damage)enemy_Health[18+i]-=enemy_damage;
-                        if(enemy_Health[18+i]==0)shipnum--;
-                        bullet1.get_spaceship_static(spaceship_x, spaceship_y);
-                        bullet_y = spaceship_y - 50;     bullet_x=(2*spaceship_x + 100)/2;
+                        if(health[18+i]<=dam)health[18+i]=0; else; health[18+i]-=dam;
+                        if(health[18+i]==0){shipnum--;    Wave1Create.destroy_ship(18+i);}
+                        bullet1.get_spaceship_static(sx, sy);
+                        by = sy - 50;     bx=(2*sx + 100)/2;
                 }
             }
-            else if enemy_Health[9+i]>0)
+            else if(health[9+i]>0)
             {
-                if(bullet_Y==enemyship_wave1_Rect[9+i].y+120)
+                if(by==enemyrect[9+i].y+120)
                 {
-                        if(enemy_Health[9+i]>enemy_damage)enemy_Health[9+i]-=enemy_damage;
-                        if(enemy_Health[9+i]==0)shipnum--;
-                        bullet1.get_spaceship_static(spaceship_x, spaceship_y);
-                        bullet_y = spaceship_y - 50;     bullet_x=(2*spaceship_x + 100)/2;
+                        if(health[9+i]<=dam)health[18+i]=0; else; health[9+i]-=dam;
+                        if(health[9+i]==0){shipnum--;    Wave1Create.destroy_ship(9+i);}
+                        bullet1.get_spaceship_static(sx, sy);
+                        by = sy - 50;     bx=(2*sx + 100)/2;
                 }
             }
-            else if enemy_Health[i]>0)
+            else if(health[i]>0)
             {
-                if(bullet_Y==enemyship_wave1_Rect[i].y+120)
+                if(by==enemyrect[i].y+120)
                 {
-                        if(enemy_Health[i]>enemy_damage)enemy_Health[i]-=enemy_damage;
-                        if(enemy_Health[i]==0)shipnum--;
-                        bullet1.get_spaceship_static(spaceship_x, spaceship_y);
-                        bullet_y = spaceship_y - 50;     bullet_x=(2*spaceship_x + 100)/2;
+                        if(health[9+i]<=dam)health[18+i]=0; else; health[9+i]-=dam;
+                        if(health[i]==0){shipnum--;    Wave1Create.destroy_ship(i);}
+                        bullet1.get_spaceship_static(sx, sy);
+                        by = sy - 50;     bx=(2*sx + 100)/2;
                 }
             }
-       }
-       if (bullet_Y<0){bullet_y = spaceship_y - 50;     bullet_x=(2*spaceship_x + 100)/2;}
+       //}
+       //for(int i=19;i<=27;i++)std::cout<<health[i]<<' ';     std::cout<<std::endl;
+       //std::cout<<enemyrect[19].x<<' ';     std::cout<<std::endl;
+       if (by<0){    by = sy - 50;     bx=(2*sx + 100)/2;}
     }
 }
 

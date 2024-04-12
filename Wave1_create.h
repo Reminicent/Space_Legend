@@ -17,16 +17,18 @@ public:
     void bullet_render(SDL_Renderer* renderer);
     void create_enemyship_position();
 
+    int left_HP_calculator(int hp,int dam);
+
     void setting_initial_heath(int h);
     void create_HP_bar();
     void render_HP_bar();
 
     void create_enemybullet_position();
     void bullet_fire();
+    void destroy_ship(int shipnum);
+
 
 private:
-    SDL_Texture* ship_texture;
-    SDL_Texture* bullet_texture;
     int x, y, s;
     SDL_Renderer* renderer;
     SDL_Rect bullet;

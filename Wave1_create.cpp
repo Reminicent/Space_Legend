@@ -3,11 +3,15 @@
 #include <vector>
 
 SDL_Rect enemyship_wave1_Rect[28];
+SDL_Rect current_healthbar_rect[28];
+SDL_Rect left_healthbar_rect[28];
 SDL_Rect healthbar_rect[28];
 int enemy_maxHealth[28],enemy_Health[28];
 int enemybullet_X[27],enemybullet_W[27],enemybullet_H[27];
 float enemybullet_Y[27];
 float enemybullet_speed=0.075;
+SDL_Texture* ship_texture[28];
+SDL_Texture* bullet_texture[28];
 
 EnemyShip::EnemyShip(){}
 void EnemyShip::Create_enemyship(SDL_Renderer* renderer, const std::string& imagePath1,const std::string& imagePath2) {
@@ -22,15 +26,21 @@ void EnemyShip::Create_enemyship(SDL_Renderer* renderer, const std::string& imag
         std::cerr << "Failed to load enemy bullet image: " << IMG_GetError() << std::endl;
     }
 
-    ship_texture = SDL_CreateTextureFromSurface(renderer, ship_surface);
+    for(int i=1;i<=27;i++)
+    {
+    ship_texture[i] = SDL_CreateTextureFromSurface(renderer, ship_surface);
+    bullet_texture[i] = SDL_CreateTextureFromSurface(renderer, bullet_surface);
+    }
     SDL_FreeSurface(ship_surface);
-    bullet_texture = SDL_CreateTextureFromSurface(renderer, bullet_surface);
     SDL_FreeSurface(bullet_surface);
 }
 
 EnemyShip::~EnemyShip() {
-    SDL_DestroyTexture(ship_texture);
-    SDL_DestroyTexture(bullet_texture);
+    for(int i=1;i<=27;i++)
+    {
+    SDL_DestroyTexture(ship_texture[i]);
+    SDL_DestroyTexture(bullet_texture[i]);
+    }
 }
 
 void EnemyShip::update() {}
@@ -72,9 +82,13 @@ void EnemyShip::create_HP_bar()
 }
 void EnemyShip::render_HP_bar()
 {
-    //int barWidth = static_cast<int>((static_cast<double>(currentHealth) / maxHealth) * barRect.w);
-    for(int i=1;i<=27;i++)
+    for(int i=1;i<=27;i++)if(enemy_Health>0)
     {
+         current_healthbar_rect[i].x = healthbar_rect[i].x;
+         current_healthbar_rect[i].y = healthbar_rect[i].y;
+         current_healthbar_rect[i].w = healthbar_rect[i].w;
+         current_healthbar_rect[i].h = static_cast<int>((static_cast<double>(enemy_Health[i]) / enemy_maxHealth[i]) * healthbar_rect[i].h);
+
          if (enemy_Health[i] >= 50 * enemy_maxHealth[i] / 100) {
             barColor[i] = {0, 255, 0, 255};
          } else if (enemy_Health[i] >= 25 * enemy_maxHealth[i] / 100) {
@@ -84,10 +98,18 @@ void EnemyShip::render_HP_bar()
          }
 
          SDL_SetRenderDrawColor(renderer, barColor[i].r, barColor[i].g, barColor[i].b, barColor[i].a);
-         SDL_RenderFillRect(renderer, &healthbar_rect[i]);
+         SDL_RenderFillRect(renderer, &current_healthbar_rect[i]);
 
          SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
          SDL_RenderDrawRect(renderer, &healthbar_rect[i]);
+
+         left_healthbar_rect[i].x = healthbar_rect[i].x;
+         left_healthbar_rect[i].y = healthbar_rect[i].y;
+         left_healthbar_rect[i].w = healthbar_rect[i].w;
+         left_healthbar_rect[i].h = healthbar_rect[i].h - current_healthbar_rect[i].h;
+
+         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+         SDL_RenderDrawRect(renderer, &left_healthbar_rect[i]);
      }
 }
 void EnemyShip::create_enemybullet_position()
@@ -111,12 +133,22 @@ void EnemyShip::bullet_fire()
     }
 }
 void EnemyShip::ship_render(SDL_Renderer* renderer) {
-     for (int i = 1; i <= 27; i++){SDL_RenderCopy(renderer, ship_texture, NULL, &enemyship_wave1_Rect[i]);}
+     for (int i = 1; i <= 27; i++){SDL_RenderCopy(renderer, ship_texture[i], NULL, &enemyship_wave1_Rect[i]);}
 }
 void EnemyShip::bullet_render(SDL_Renderer* renderer) {
      for (int i = 1; i <= 27; i++){
         bullet = {enemybullet_X[i], enemybullet_Y[i], enemybullet_W[i], enemybullet_H[i]};
-        SDL_RenderCopy(renderer, bullet_texture, NULL, &bullet);
+        SDL_RenderCopy(renderer, bullet_texture[i], NULL, &bullet);
             }
 }
+void EnemyShip::destroy_ship(int shipnum)
+{
+    SDL_DestroyTexture(ship_texture[shipnum]);
+    SDL_DestroyTexture(bullet_texture[shipnum]);
+}
+int left_HP_calculator(int hp,int dam)
+{
+    if(hp<=dam)return 0; else return hp-dam;
+}
+
 
