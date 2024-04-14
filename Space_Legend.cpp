@@ -12,12 +12,13 @@
 #include "Background_music.h"
 #include "global_variable.h"
 #include "spaceship_hp.h"
+//#include "Wave1_attack.h"
 
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 
-int i;
-int spaceship_HP = 1000;     int current_spaceship_HP = 1000;    int current_spaceship_HP_0=1000;     int enemy_initial_maxHealth=300;
+int i,shipnum=27;
+int spaceship_HP = 1000;     int current_spaceship_HP = 1000;    int current_spaceship_HP_0=1000;     //int enemy_initial_maxHealth=300;
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -46,7 +47,10 @@ int main(int argc, char* argv[]) {
     Wave1.create_enemyship_position();
     Wave1.create_enemybullet_position();
     Wave1.setting_initial_heath(enemy_initial_maxHealth);
+
     Wave1.create_HP_bar();
+    //Wave1Attack wave1attack;
+    //wave1attack.get_static(spaceship_x,spaceship_y,bullet_x,bullet_damage,bullet_y,bullet_speed,enemy_Health,enemyship_wave1_Rect);
 
     bool quit = false;
     SDL_Event event;
@@ -74,11 +78,48 @@ int main(int argc, char* argv[]) {
         } else {
         spaceship.render(renderer);
         spaceship_x=spaceship.updateX();    spaceship_y=spaceship.updateY();
-        bullet1.get_spaceship_static(spaceship_x, spaceship_y);
-        //std::cout<<spaceship_x<<' '<<spaceship_y<<std::endl;
+        //bullet1.get_spaceship_static(spaceship_x, spaceship_y);
         SpaceshipHP spaceshiphp(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
-        bullet1.handleEvent(event);
-        bullet1.render(renderer);
+        //wave1attack.get_changed_static(enemy_Health);
+        //wave1attack.get_static(spaceship_x,spaceship_y,bullet_x,bullet_damage,bullet_y,bullet_speed,enemy_Health,enemyship_wave1_Rect);
+        bullet_y-=bullet_speed;
+        for(int i=1;i<=9;i++)
+        {
+         if(bullet_x>=enemyship_wave1_Rect[i].x&&bullet_x<=enemyship_wave1_Rect[i].x+80)
+            if(enemy_Health[18+i]>0)
+            {
+                if(bullet_y<=enemyship_wave1_Rect[18+i].y+70&&bullet_y>=enemyship_wave1_Rect[18+i].y+60)
+                {
+                        if(enemy_Health[18+i]<=bullet_damage)enemy_Health[18+i]=0; else enemy_Health[18+i]-=bullet_damage;
+                        if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i);}
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+                }
+            }
+            else if(enemy_Health[9+i]>0)
+            {
+                if(bullet_y<=enemyship_wave1_Rect[9+i].y+70&&bullet_y>=enemyship_wave1_Rect[9+i].y+60)
+                {
+                        if(enemy_Health[9+i]<=bullet_damage)enemy_Health[9+i]=0; else enemy_Health[9+i]-=bullet_damage;
+                        if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i);}
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+                }
+            }
+            else if(enemy_Health[i]>0)
+            {
+                if(bullet_y<=enemyship_wave1_Rect[i].y+70&&bullet_y>=enemyship_wave1_Rect[i].y+60)
+                {
+                        if(enemy_Health[i]<=bullet_damage)enemy_Health[i]=0; else enemy_Health[i]-=bullet_damage;
+                        if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);}
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+
+                }
+            }
+       if (bullet_y<0){bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;}
+       }
+
+        //wave1attack.get_changed_static(enemy_Health);
+        //wave1attack.handleEvent(event);
+        bullet1.render(renderer,bullet_x,bullet_y,bullet_size,bullet_size);
         spaceshiphp.render(renderer);
         Wave1.render_HP_bar();
         Wave1.bullet_fire();
