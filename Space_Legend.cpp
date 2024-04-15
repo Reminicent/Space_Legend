@@ -12,6 +12,7 @@
 #include "Background_music.h"
 #include "global_variable.h"
 #include "spaceship_hp.h"
+#include "score.h"
 //#include "Wave1_attack.h"
 
 const int SCREEN_WIDTH = 1600;
@@ -22,6 +23,7 @@ int spaceship_HP = 1000;     int current_spaceship_HP = 1000;    int current_spa
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
     SDL_Window* window = SDL_CreateWindow("Chiến cơ huyền thoại", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     IMG_Init(IMG_INIT_PNG);
@@ -36,6 +38,7 @@ int main(int argc, char* argv[]) {
     backgroundMusic.play(backgroundmusic1);
     Background background(renderer, "Background.png");
     MainMenu mainmenu(renderer);
+    Score Score;
     //SpaceshipHP spaceshiphp(renderer, spaceship, 700, 150, 20, 100);
     Spaceship spaceship;
     spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
@@ -82,6 +85,7 @@ int main(int argc, char* argv[]) {
         SpaceshipHP spaceshiphp(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
         //wave1attack.get_changed_static(enemy_Health);
         //wave1attack.get_static(spaceship_x,spaceship_y,bullet_x,bullet_damage,bullet_y,bullet_speed,enemy_Health,enemyship_wave1_Rect);
+        Score.Score_create(renderer,20,720,40);
         bullet_y-=bullet_speed;
         for(int i=1;i<=9;i++)
         {
@@ -91,7 +95,7 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[18+i].y+70&&bullet_y>=enemyship_wave1_Rect[18+i].y+60)
                 {
                         if(enemy_Health[18+i]<=bullet_damage)enemy_Health[18+i]=0; else enemy_Health[18+i]-=bullet_damage;
-                        if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i);}
+                        if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i);    Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
                 }
             }
@@ -100,7 +104,7 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[9+i].y+70&&bullet_y>=enemyship_wave1_Rect[9+i].y+60)
                 {
                         if(enemy_Health[9+i]<=bullet_damage)enemy_Health[9+i]=0; else enemy_Health[9+i]-=bullet_damage;
-                        if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i);}
+                        if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i); Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
                 }
             }
@@ -109,14 +113,14 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[i].y+70&&bullet_y>=enemyship_wave1_Rect[i].y+60)
                 {
                         if(enemy_Health[i]<=bullet_damage)enemy_Health[i]=0; else enemy_Health[i]-=bullet_damage;
-                        if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);}
+                        if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);    Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
 
                 }
             }
        if (bullet_y<0){bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;}
        }
-
+        if(shipnum==0){Score.increaseScore(your_score*13); shipnum=-1;}
         //wave1attack.get_changed_static(enemy_Health);
         //wave1attack.handleEvent(event);
         bullet1.render(renderer,bullet_x,bullet_y,bullet_size,bullet_size);
@@ -125,12 +129,14 @@ int main(int argc, char* argv[]) {
         Wave1.bullet_fire();
         Wave1.ship_render(renderer);
         Wave1.bullet_render(renderer);
+        Score.render(renderer);
         }
         SDL_RenderPresent(renderer);
     }
 
     Mix_CloseAudio();
     IMG_Quit();
+    TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
