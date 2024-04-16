@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <bits/stdc++.h>
 #include <vector>
 
@@ -13,13 +14,14 @@
 #include "global_variable.h"
 #include "spaceship_hp.h"
 #include "score.h"
+#include "gameover.h"
 //#include "Wave1_attack.h"
 
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 
 int i,shipnum=27;
-int spaceship_HP = 1000;     int current_spaceship_HP = 1000;    int current_spaceship_HP_0=1000;     //int enemy_initial_maxHealth=300;
+int spaceship_HP = 1000;     int current_spaceship_HP = 1000;
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -38,22 +40,26 @@ int main(int argc, char* argv[]) {
     backgroundMusic.play(backgroundmusic1);
     Background background(renderer, "Background.png");
     MainMenu mainmenu(renderer);
-    Score Score;
-    //SpaceshipHP spaceshiphp(renderer, spaceship, 700, 150, 20, 100);
+    //Score Score;
+
     Spaceship spaceship;
     spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
     spaceship.setScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
     Bullet bullet1;
     bullet1.Create_Bullet(renderer, "Bullet5.png", bullet_x, bullet_y ,bullet_size, bullet_size,bullet_damage, bullet_speed);
+
     EnemyShip Wave1;
     Wave1.Create_enemyship(renderer,"ship3.png","Bullet3.png");
     Wave1.create_enemyship_position();
     Wave1.create_enemybullet_position();
     Wave1.setting_initial_heath(enemy_initial_maxHealth);
-
     Wave1.create_HP_bar();
-    //Wave1Attack wave1attack;
-    //wave1attack.get_static(spaceship_x,spaceship_y,bullet_x,bullet_damage,bullet_y,bullet_speed,enemy_Health,enemyship_wave1_Rect);
+
+    SpaceshipHP spaceshiphp;
+
+    GameOver gameover;
+    gameover.init(renderer);
 
     bool quit = false;
     SDL_Event event;
@@ -81,11 +87,10 @@ int main(int argc, char* argv[]) {
         } else {
         spaceship.render(renderer);
         spaceship_x=spaceship.updateX();    spaceship_y=spaceship.updateY();
-        //bullet1.get_spaceship_static(spaceship_x, spaceship_y);
-        SpaceshipHP spaceshiphp(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
-        //wave1attack.get_changed_static(enemy_Health);
-        //wave1attack.get_static(spaceship_x,spaceship_y,bullet_x,bullet_damage,bullet_y,bullet_speed,enemy_Health,enemyship_wave1_Rect);
-        Score.Score_create(renderer,20,720,40);
+        Wave1.get_ship(current_spaceship_HP,enemy_damage);
+        spaceshiphp.create_health_bar(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
+
+        //Score.Score_create(renderer,20,720,40);
         bullet_y-=bullet_speed;
         for(int i=1;i<=9;i++)
         {
@@ -95,7 +100,7 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[18+i].y+70&&bullet_y>=enemyship_wave1_Rect[18+i].y+60)
                 {
                         if(enemy_Health[18+i]<=bullet_damage)enemy_Health[18+i]=0; else enemy_Health[18+i]-=bullet_damage;
-                        if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i);    Score.increaseScore(your_score);}
+                        if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i); Wave1.destroy_bullet(18+i);}//   Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
                 }
             }
@@ -104,7 +109,7 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[9+i].y+70&&bullet_y>=enemyship_wave1_Rect[9+i].y+60)
                 {
                         if(enemy_Health[9+i]<=bullet_damage)enemy_Health[9+i]=0; else enemy_Health[9+i]-=bullet_damage;
-                        if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i); Score.increaseScore(your_score);}
+                        if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i);   Wave1.destroy_bullet(9+i);}// Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
                 }
             }
@@ -113,23 +118,24 @@ int main(int argc, char* argv[]) {
                 if(bullet_y<=enemyship_wave1_Rect[i].y+70&&bullet_y>=enemyship_wave1_Rect[i].y+60)
                 {
                         if(enemy_Health[i]<=bullet_damage)enemy_Health[i]=0; else enemy_Health[i]-=bullet_damage;
-                        if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);    Score.increaseScore(your_score);}
+                        if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);    Wave1.destroy_bullet(i);}//   Score.increaseScore(your_score);}
                         bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
 
                 }
             }
        if (bullet_y<0){bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;}
        }
-        if(shipnum==0){Score.increaseScore(your_score*13); shipnum=-1;}
-        //wave1attack.get_changed_static(enemy_Health);
-        //wave1attack.handleEvent(event);
+        //if(shipnum==0){Score.increaseScore(your_score*13); shipnum=-1;}
+
         bullet1.render(renderer,bullet_x,bullet_y,bullet_size,bullet_size);
-        spaceshiphp.render(renderer);
         Wave1.render_HP_bar();
-        Wave1.bullet_fire();
         Wave1.ship_render(renderer);
         Wave1.bullet_render(renderer);
-        Score.render(renderer);
+        Wave1.bullet_fire(spaceship_x,spaceship_y);
+        current_spaceship_HP = Wave1.update_current_health();
+        if(current_spaceship_HP==0){gameover.render(renderer);}
+        spaceshiphp.render(renderer,current_spaceship_HP);
+        //Score.render(renderer);
         }
         SDL_RenderPresent(renderer);
     }
