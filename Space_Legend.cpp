@@ -15,6 +15,7 @@
 #include "spaceship_hp.h"
 #include "score.h"
 #include "gameover.h"
+#include "game_pause.h"
 //#include "Wave1_attack.h"
 
 const int SCREEN_WIDTH = 1600;
@@ -39,7 +40,10 @@ int main(int argc, char* argv[]) {
     Mix_Music* backgroundmusic2 = Mix_LoadMUS("background_music2.mp3");
     backgroundMusic.play(backgroundmusic1);
     Background background(renderer, "Background.png");
-    MainMenu mainmenu(renderer);
+
+    MainMenu mainmenu;
+    mainmenu.Create_MainMenu(renderer);
+
     //Score Score;
 
     Spaceship spaceship;
@@ -57,6 +61,9 @@ int main(int argc, char* argv[]) {
     Wave1.create_HP_bar();
 
     SpaceshipHP spaceshiphp;
+
+    //PauseMenu pause;
+    //pause.create_pausemenu(renderer);
 
     GameOver gameover;
     gameover.init(renderer);
@@ -79,12 +86,14 @@ int main(int argc, char* argv[]) {
               }
                spaceship.handleEvent(event);
              }
+             //pause.handleInput(event);
         }
         SDL_RenderClear(renderer);
         background.render();
         if (inMenu) {
         mainmenu.render(renderer);
         } else {
+        //pause.render();
         spaceship.render(renderer);
         spaceship_x=spaceship.updateX();    spaceship_y=spaceship.updateY();
         Wave1.get_ship(current_spaceship_HP,enemy_damage);
