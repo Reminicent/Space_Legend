@@ -30,16 +30,19 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = SDL_CreateWindow("Chiến cơ huyền thoại", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     IMG_Init(IMG_INIT_PNG);
-
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 4, 2048) < 0) {
        std::cerr << "SDL_mixer could not initialize! SDL_Error: " << Mix_GetError() << std::endl;
         return 1;
     }
+
+    Background background;
+    background.create_background(renderer, "Background.png");
+
     BackgroundMusic backgroundMusic;
     Mix_Music* backgroundmusic1 = Mix_LoadMUS("background_music1.flac");
-    Mix_Music* backgroundmusic2 = Mix_LoadMUS("background_music2.mp3");
-    backgroundMusic.play(backgroundmusic1);
-    Background background(renderer, "Background.png");
+    Mix_Music* backgroundmusic2 = Mix_LoadMUS("gameovermusic.mp3");
+    Mix_Music* gameovermusic = Mix_LoadMUS("gameovermusic.mp3");
+    //backgroundMusic.play(backgroundmusic1);
 
     MainMenu mainmenu;
     mainmenu.Create_MainMenu(renderer);
@@ -47,22 +50,22 @@ int main(int argc, char* argv[]) {
     //Score Score;
 
     Spaceship spaceship;
-    spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
+    //spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
     spaceship.setScreenSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     Bullet bullet1;
-    bullet1.Create_Bullet(renderer, "Bullet5.png", bullet_x, bullet_y ,bullet_size, bullet_size,bullet_damage, bullet_speed);
+    //bullet1.Create_Bullet(renderer, "Bullet5.png", bullet_x, bullet_y ,bullet_size, bullet_size,bullet_damage, bullet_speed);
 
     EnemyShip Wave1;
-    Wave1.Create_enemyship(renderer,"ship3.png","Bullet3.png");
-    Wave1.create_enemyship_position();
-    Wave1.create_enemybullet_position();
-    Wave1.setting_initial_heath(enemy_initial_maxHealth);
-    Wave1.create_HP_bar();
+    //Wave1.Create_enemyship(renderer,"ship3.png","Bullet3.png");
+    //Wave1.create_enemyship_position();
+    //Wave1.create_enemybullet_position();
+    //Wave1.setting_initial_heath(enemy_initial_maxHealth);
+    //Wave1.create_HP_bar();
 
     SpaceshipHP spaceshiphp;
 
-    //PauseMenu pause;
+    PauseMenu pause;
     //pause.create_pausemenu(renderer);
 
     GameOver gameover;
@@ -75,6 +78,22 @@ int main(int argc, char* argv[]) {
              if (event.type == SDL_QUIT) {
                   quit = true;
             } else if (inMenu) {
+                spaceship_HP = 1000;    current_spaceship_HP = 1000;   bullet_damage=100;
+                spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
+                bullet1.Create_Bullet(renderer, "Bullet5.png", bullet_x, bullet_y ,bullet_size, bullet_size,bullet_damage, bullet_speed);
+                Wave1.Create_enemyship(renderer,"ship3.png","Bullet3.png");
+                Wave1.create_enemyship_position();
+                Wave1.create_enemybullet_position();
+                Wave1.setting_initial_heath(enemy_initial_maxHealth);
+                Wave1.create_HP_bar();
+                pause.create_pausemenu(renderer);
+
+                mainmenu.Create_MainMenu(renderer);
+                if (!backgroundmusic1Played) {
+                      Mix_HaltMusic();
+                      backgroundMusic.play(backgroundmusic1);
+                      backgroundmusic1Played = true;
+                }
                 if(mainmenu.handleEvent(event)) {
                     inMenu = false;
                }
@@ -86,14 +105,28 @@ int main(int argc, char* argv[]) {
               }
                spaceship.handleEvent(event);
              }
-             //pause.handleInput(event);
+             pause.handleInput(event);
         }
         SDL_RenderClear(renderer);
         background.render();
-        if (inMenu) {
-        mainmenu.render(renderer);
-        } else {
-        //pause.render();
+        if (inMenu) {mainmenu.render(renderer);}
+           else if(pause.isGamePaused())
+              {
+                  pause.render();
+                  if (pause.backToMainMenu())
+                  {
+                      pause.Destroy_pause();
+                      Wave1.Destroy_EnemyShip();
+                      bullet1.Destroy_Bullet();
+                      spaceship.Destroy_Spaceship();
+                      spaceshiphp.Destroy_Spaceshiphp();
+                      Mix_HaltMusic();
+                      backgroundmusic1Played = false;
+                      backgroundMusic2Played = false;
+                      inMenu=true;
+                  }
+              }
+              else if(!pause.isGamePaused()) {
         spaceship.render(renderer);
         spaceship_x=spaceship.updateX();    spaceship_y=spaceship.updateY();
         Wave1.get_ship(current_spaceship_HP,enemy_damage);
@@ -142,7 +175,7 @@ int main(int argc, char* argv[]) {
         Wave1.bullet_render(renderer);
         Wave1.bullet_fire(spaceship_x,spaceship_y);
         current_spaceship_HP = Wave1.update_current_health();
-        if(current_spaceship_HP==0){gameover.render(renderer);}
+        if(current_spaceship_HP==0){gameover.render(renderer);    }
         spaceshiphp.render(renderer,current_spaceship_HP);
         //Score.render(renderer);
         }
