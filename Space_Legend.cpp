@@ -16,12 +16,13 @@
 #include "score.h"
 #include "gameover.h"
 #include "game_pause.h"
+#include "explosion.h"
 //#include "Wave1_attack.h"
 
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 
-int i,shipnum=27;
+int i,shipnum=27;     bool fire = true;
 int spaceship_HP = 1000;     int current_spaceship_HP = 1000;
 
 int main(int argc, char* argv[]) {
@@ -40,8 +41,9 @@ int main(int argc, char* argv[]) {
 
     BackgroundMusic backgroundMusic;
     Mix_Music* backgroundmusic1 = Mix_LoadMUS("background_music1.flac");
-    Mix_Music* backgroundmusic2 = Mix_LoadMUS("gameovermusic.mp3");
-    Mix_Music* gameovermusic = Mix_LoadMUS("gameovermusic.mp3");
+    Mix_Music* backgroundmusic2 = Mix_LoadMUS("background_music2.mp3");
+    Mix_Chunk* bulletsound = Mix_LoadWAV("bulletsound.wav");
+    Mix_AllocateChannels(2);
     //backgroundMusic.play(backgroundmusic1);
 
     MainMenu mainmenu;
@@ -67,6 +69,9 @@ int main(int argc, char* argv[]) {
 
     PauseMenu pause;
     //pause.create_pausemenu(renderer);
+
+    //ExplosionEffect explosion;
+    //explosion.init(renderer,500,500,1000);
 
     GameOver gameover;
     gameover.init(renderer);
@@ -121,6 +126,7 @@ int main(int argc, char* argv[]) {
                       spaceship.Destroy_Spaceship();
                       spaceshiphp.Destroy_Spaceshiphp();
                       Mix_HaltMusic();
+                      gameover.setting_music();
                       backgroundmusic1Played = false;
                       backgroundMusic2Played = false;
                       inMenu=true;
@@ -133,8 +139,8 @@ int main(int argc, char* argv[]) {
         spaceshiphp.create_health_bar(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
 
         //Score.Score_create(renderer,20,720,40);
-        bullet_y-=bullet_speed;
-        for(int i=1;i<=9;i++)
+        bullet_y-=bullet_speed;      if(bullet1.Check_bullet()&&fire){Mix_PlayChannel(1,bulletsound,0);  Mix_Volume(-1, MIX_MAX_VOLUME*0.6);  fire=false;}
+        for(int i=1;i<=9;i++)if(bullet1.Check_bullet())
         {
          if(bullet_x>=enemyship_wave1_Rect[i].x&&bullet_x<=enemyship_wave1_Rect[i].x+80)
             if(enemy_Health[18+i]>0)
@@ -143,7 +149,7 @@ int main(int argc, char* argv[]) {
                 {
                         if(enemy_Health[18+i]<=bullet_damage)enemy_Health[18+i]=0; else enemy_Health[18+i]-=bullet_damage;
                         if(enemy_Health[18+i]==0){shipnum--;    Wave1.destroy_ship(18+i); Wave1.destroy_bullet(18+i);}//   Score.increaseScore(your_score);}
-                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;   fire=true;
                 }
             }
             else if(enemy_Health[9+i]>0)
@@ -152,7 +158,7 @@ int main(int argc, char* argv[]) {
                 {
                         if(enemy_Health[9+i]<=bullet_damage)enemy_Health[9+i]=0; else enemy_Health[9+i]-=bullet_damage;
                         if(enemy_Health[9+i]==0){shipnum--;    Wave1.destroy_ship(9+i);   Wave1.destroy_bullet(9+i);}// Score.increaseScore(your_score);}
-                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;   fire=true;
                 }
             }
             else if(enemy_Health[i]>0)
@@ -161,11 +167,11 @@ int main(int argc, char* argv[]) {
                 {
                         if(enemy_Health[i]<=bullet_damage)enemy_Health[i]=0; else enemy_Health[i]-=bullet_damage;
                         if(enemy_Health[i]==0){shipnum--;    Wave1.destroy_ship(i);    Wave1.destroy_bullet(i);}//   Score.increaseScore(your_score);}
-                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;
+                        bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;    fire=true;
 
                 }
             }
-       if (bullet_y<0){bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;}
+       if (bullet_y<0){bullet_y = spaceship_y - spaceship_size/2;     bullet_x=(2*spaceship_x + spaceship_size)/2;    fire=true;}
        }
         //if(shipnum==0){Score.increaseScore(your_score*13); shipnum=-1;}
 
@@ -175,7 +181,7 @@ int main(int argc, char* argv[]) {
         Wave1.bullet_render(renderer);
         Wave1.bullet_fire(spaceship_x,spaceship_y);
         current_spaceship_HP = Wave1.update_current_health();
-        if(current_spaceship_HP==0){gameover.render(renderer);    }
+        if(current_spaceship_HP==0){bullet1.Destroy_Bullet();    gameover.render(renderer);    gameover.load_gameovermusic();}
         spaceshiphp.render(renderer,current_spaceship_HP);
         //Score.render(renderer);
         }
