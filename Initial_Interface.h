@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 
 class MainMenu {
 public:
@@ -18,7 +19,7 @@ private:
     SDL_Texture* playTexture;
     SDL_Texture* instructionsTexture;
     SDL_Texture* quitTexture;
-    SDL_Texture* creditTexture;
+    //SDL_Texture* creditTexture;
     //SDL_Texture* highscoreTexture;
 
     SDL_Rect playButtonRect;
@@ -26,7 +27,6 @@ private:
     SDL_Rect quitButtonRect;
     SDL_Rect creditButtonRect;
     SDL_Rect highscoreButtonRect;
-
 
 };
 

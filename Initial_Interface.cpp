@@ -1,21 +1,23 @@
 #include "Initial_Interface.h"
 #include "instructions_music.h"
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <bits/stdc++.h>
+
+SDL_Texture* creditTexture;
+SDL_Texture* highscoreTexture;
+Mix_Music* instruction_music;
+Mix_Music* credit_music ;
+Mix_Music* highscore_music;
+InstructionsMusic instructionsmusic;
+SDL_Point clickPoint;
 
 MainMenu::MainMenu(){}
 void MainMenu::Create_MainMenu(SDL_Renderer* renderer){
     SDL_Surface* play_surface = IMG_Load("play_button.png");
     playTexture = SDL_CreateTextureFromSurface(renderer, play_surface);
     SDL_FreeSurface(play_surface);
-    //play_surface=nullptr;
 
     SDL_Surface* instructions_surface = IMG_Load("instructions_button.png");
     instructionsTexture = SDL_CreateTextureFromSurface(renderer, instructions_surface);
     SDL_FreeSurface(instructions_surface);
-    //instructions_surface = NULL;
 
     SDL_Surface* quit_surface = IMG_Load("quit_button.png");
     quitTexture = SDL_CreateTextureFromSurface(renderer, quit_surface);
@@ -25,10 +27,13 @@ void MainMenu::Create_MainMenu(SDL_Renderer* renderer){
     creditTexture = SDL_CreateTextureFromSurface(renderer, credit_surface);
     SDL_FreeSurface(credit_surface);
 
-    //credit_surface = IMG_Load("highscore_button.png");
-    //creditTexture[2] = SDL_CreateTextureFromSurface(renderer, credit_surface);
-    //SDL_FreeSurface(credit_surface);
+    credit_surface = IMG_Load("highscore_button.png");
+    highscoreTexture = SDL_CreateTextureFromSurface(renderer, credit_surface);
+    SDL_FreeSurface(credit_surface);
 
+    instruction_music = Mix_LoadMUS("instructions_music.mp3");
+    credit_music = Mix_LoadMUS("credit_music.mp3");
+    highscore_music = Mix_LoadMUS("highscore_music.mp3");
 }
 
 void MainMenu::Destroy_MainMenu() {
@@ -36,8 +41,11 @@ void MainMenu::Destroy_MainMenu() {
     SDL_DestroyTexture(instructionsTexture);
     SDL_DestroyTexture(quitTexture);
     SDL_DestroyTexture(creditTexture);
-    //SDL_DestroyTexture(creditTexture[2]);
-    //SDL_DestroyTexture(highscoreTexture);
+    SDL_DestroyTexture(highscoreTexture);
+
+    instruction_music = nullptr;
+    credit_music = nullptr;
+    highscore_music = nullptr;
 }
 
 
@@ -55,8 +63,7 @@ void MainMenu::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, instructionsTexture, NULL, &instructionsButtonRect);
     SDL_RenderCopy(renderer, quitTexture, NULL, &quitButtonRect);
     SDL_RenderCopy(renderer, creditTexture, NULL, &creditButtonRect);
-    //SDL_RenderCopy(renderer, creditTexture[2], NULL, &highscoreButtonRect);
-    //SDL_RenderCopy(renderer, highscoreTexture, NULL, &highscoreButtonRect);
+    SDL_RenderCopy(renderer, highscoreTexture, NULL, &highscoreButtonRect);
 
 }
 
@@ -64,28 +71,25 @@ bool MainMenu::handleEvent(SDL_Event& e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         int x, y;
         SDL_GetMouseState(&x, &y);
-        SDL_Point clickPoint = {x, y};
-        if (SDL_PointInRect(&clickPoint, &playButtonRect)) {
+        if (x>=700&&x<=900&&y>=400&&y<=500) {
             return true;
-        } else if (SDL_PointInRect(&clickPoint, &instructionsButtonRect)) {
-            bool instruction_musicPlayed ;    Mix_Music* instruction_music;
-            InstructionsMusic instructionsmusic;
-            instruction_music = Mix_LoadMUS("instructions_music.mp3");
+        } else if (x>=700&&x<=900&&y>=550&&y<=650) {
+            bool instruction_musicPlayed ;
             if (!instruction_musicPlayed) {
+                      Mix_HaltMusic();
                       instructionsmusic.play(instruction_music);
                       instruction_musicPlayed = true;
             }
-        } else if (SDL_PointInRect(&clickPoint, &quitButtonRect)) {SDL_Quit();    return 0;
-        } else if (SDL_PointInRect(&clickPoint, &creditButtonRect)){
-            bool credit_musicPlayed = false;    Mix_Music* credit_music ;
-            credit_music = Mix_LoadMUS("credit_music.flac");
+        } else if (x>=700&&x<=900&&y>=700&&y<=800) {SDL_Quit();    return 0;
+        } else if (x>=450&&x<=650&&y>=550&&y<=650){
+            bool credit_musicPlayed = false;
             if (!credit_musicPlayed) {
+                      Mix_HaltMusic();
                       Mix_PlayMusic(credit_music,-1);
                       credit_musicPlayed = true;
             }
-        }else if (SDL_PointInRect(&clickPoint, &highscoreButtonRect)){
-            bool highscore_musicPlayed = false;    Mix_Music* highscore_music;
-            highscore_music = Mix_LoadMUS("highscore_music.mp3");
+        }else if (x>=950&&x<=1150&&y>=550&&y<=650){
+            bool highscore_musicPlayed = false;
             if (!highscore_musicPlayed) {
                       Mix_HaltMusic();
                       Mix_PlayMusic(highscore_music,-1);
