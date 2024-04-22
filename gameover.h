@@ -14,16 +14,19 @@ public:
     void render(SDL_Renderer* renderer);
     void load_gameovermusic();
     void setting_music();
+
     void setting_option(SDL_Renderer* renderer);
     bool handleEvent(SDL_Event& e);
     void render_menu(SDL_Renderer* renderer);
+    void destroy_menu();
+    bool return_wave_1();
 
 private:
-    int x,y;
     Mix_Music* gameovermusic;
     SDL_Texture* gameOverTexture;
     SDL_Rect gameOverRect;
     bool gameovermusicPlayed = false;
+    bool in_Wave1 =false;
 
     SDL_Texture* againTexture;
     SDL_Texture* menuTexture;

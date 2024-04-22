@@ -1,8 +1,6 @@
 #include "gameover.h"
-#include "Wave1_create.h"
 #include <bits/stdc++.h>
 
-//EnemyShip Wave1;
 GameOver::GameOver() : gameOverTexture(nullptr) {}
 
 GameOver::~GameOver() {
@@ -78,11 +76,12 @@ void GameOver::render_menu(SDL_Renderer* renderer)
     SDL_RenderCopy(renderer, quitTexture, NULL, &quitButtonRect);
 }
 bool GameOver::handleEvent(SDL_Event& e) {
+    in_Wave1=false;
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         int x,y;
         SDL_GetMouseState(&x, &y);
         if (x>=450&&x<=650&&y>=750&&y<=850) {
-            return true;
+            in_Wave1=true;
         } else if (x>=700&&x<=900&&y>=750&&y<=850) {
             return true;
         } else if (x>=950&&x<=1150&&y>=750&&y<=850) {SDL_Quit();    return 0;
@@ -95,4 +94,9 @@ void GameOver::render(SDL_Renderer* renderer) {
     if (gameOverTexture) {
         SDL_RenderCopy(renderer, gameOverTexture, nullptr, &gameOverRect);
     }
+}
+
+bool GameOver::return_wave_1()
+{
+    return in_Wave1;
 }
