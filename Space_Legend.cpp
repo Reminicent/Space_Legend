@@ -18,6 +18,7 @@
 #include "game_pause.h"
 #include "explosion.h"
 #include "Wave2_create.h"
+#include "update_static.h"
 
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
@@ -30,6 +31,7 @@ bool checkGameOver = false;
 bool W1 =false,W2 =false,W3 =false,W4 =false,W5 =false;
 int spaceship_HP = 1000;
 int current_spaceship_HP = 1000;
+int loop;
 
 int main(int argc, char* argv[])
 {
@@ -67,6 +69,7 @@ int main(int argc, char* argv[])
     EnemyShip2 Wave2;
     SpaceshipHP spaceshiphp;
     PauseMenu pause;
+    Static upstatic;
 
     //ExplosionEffect explosion;
     //explosion.init(renderer,500,500,1000);
@@ -121,9 +124,15 @@ int main(int argc, char* argv[])
             }
             else if (inMenu)
             {
+                loop = 0;
+                upstatic.The_loop(loop);
+                shipnum = 27;
                 spaceship_HP = 1000;
                 current_spaceship_HP = 1000;
                 bullet_damage=100;
+                enemy_initial_maxHealth = 300;
+                enemybullet_speed = 0.04;
+                enemy_damage = 50;
                 spaceship.Create_Spaceship(renderer, "Ship5.png",spaceship_x,spaceship_y, spaceship_size, spaceship_size, spaceship_HP);
                 bullet1.Create_Bullet(renderer, "Bullet5.png", bullet_x, bullet_y,bullet_size, bullet_size,bullet_damage, bullet_speed);
                 Wave1.Create_enemyship(renderer,"ship3.png","Bullet3.png");
@@ -269,17 +278,6 @@ int main(int argc, char* argv[])
                         fire=true;
                     }
                 }
-            if(shipnum==0)
-            {
-            //   Score.increaseScore(your_score*13);
-            //   shipnum=-1;
-                 W1=false;     W2=true;   shipnum=27;
-                Wave2.Create_enemyship(renderer,"ship3.png","Bullet3.png");
-                Wave2.create_enemyship_position();
-                Wave2.create_enemybullet_position();
-                Wave2.setting_initial_heath(enemy_initial_maxHealth);
-                Wave2.create_HP_bar();
-            }
 
             bullet1.render(renderer,bullet_x,bullet_y,bullet_size,bullet_size);
             Wave1.render_HP_bar();
@@ -296,9 +294,115 @@ int main(int argc, char* argv[])
                 checkGameOver=true;
             }
             spaceshiphp.render(renderer,current_spaceship_HP);
+            if(shipnum==0)
+            {
+            //   Score.increaseScore(your_score*13);
+            //   shipnum=-1;
+                W1=false;     W2=true;   shipnum=18;
+                upstatic.The_loop(loop);
+                enemy_damage = upstatic.update_enemyship_dam(enemy_damage);
+                enemy_initial_maxHealth = upstatic.update_enemyship_hp(enemy_initial_maxHealth);
+                enemybullet_speed = upstatic.update_enemybullet_speed(enemybullet_speed);
+                Wave2.Create_enemyship_1(renderer,"ship3.png","Bullet3.png");
+                Wave2.create_enemyship_position();
+                Wave2.create_enemybullet_position();
+                Wave2.setting_initial_heath(enemy_initial_maxHealth);
+                Wave2.create_HP_bar();
+                if(current_spaceship_HP<50*spaceship_HP/100)current_spaceship_HP=50*spaceship_HP/100;
+            }
             //Score.render(renderer);
         }
         else if(!pause.isGamePaused()&&W2)
+        {
+            Wave1.Destroy_EnemyShip();
+            spaceship.render(renderer);
+            spaceship_x=spaceship.updateX();
+            spaceship_y=spaceship.updateY();
+            Wave2.get_ship(current_spaceship_HP,enemy_damage,enemybullet_speed);
+            spaceshiphp.create_health_bar(renderer, spaceship_x, spaceship_y, spaceship_size, spaceship_HP);
+
+            //Score.Score_create(renderer,20,720,40);
+            bullet_y-=bullet_speed;
+            if(bullet1.Check_bullet()&&fire)
+            {
+                Mix_PlayChannel(1,bulletsound,0);
+                Mix_Volume(-1, MIX_MAX_VOLUME*0.6);
+                fire=false;
+            }
+            for(int i=1; i<=9; i++)if(bullet1.Check_bullet())
+                {
+                    if(bullet_x>=enemyship_wave2_Rect[i].x&&bullet_x<=enemyship_wave2_Rect[i].x+80)
+                        if(enemy_Health_2[9+i]>0)
+                        {
+                            if(bullet_y<=enemyship_wave2_Rect[9+i].y+70&&bullet_y>=enemyship_wave2_Rect[9+i].y+60)
+                            {
+                                if(enemy_Health_2[9+i]<=bullet_damage)enemy_Health_2[9+i]=0;
+                                else enemy_Health_2[9+i]-=bullet_damage;
+                                if(enemy_Health_2[9+i]==0)
+                                {
+                                    shipnum--;
+                                    Wave2.destroy_ship(9+i);
+                                    Wave2.destroy_bullet(9+i);
+                                    //Score.increaseScore(your_score);
+                                }
+                                bullet_y = spaceship_y - spaceship_size/2;
+                                bullet_x=(2*spaceship_x + spaceship_size)/2;
+                                fire=true;
+                            }
+                        }
+                        else if(enemy_Health_2[i]>0)
+                        {
+                            if(bullet_y<=enemyship_wave2_Rect[i].y+70&&bullet_y>=enemyship_wave2_Rect[i].y+60)
+                            {
+                                if(enemy_Health_2[i]<=bullet_damage)enemy_Health_2[i]=0;
+                                else enemy_Health_2[i]-=bullet_damage;
+                                if(enemy_Health_2[i]==0)
+                                {
+                                    shipnum--;
+                                    Wave2.destroy_ship(i);
+                                    Wave2.destroy_bullet(i);
+                                    //Score.increaseScore(your_score);
+                                }
+                                bullet_y = spaceship_y - spaceship_size/2;
+                                bullet_x=(2*spaceship_x + spaceship_size)/2;
+                                fire=true;
+
+                            }
+                        }
+                    if (bullet_y<0)
+                    {
+                        bullet_y = spaceship_y - spaceship_size/2;
+                        bullet_x=(2*spaceship_x + spaceship_size)/2;
+                        fire=true;
+                    }
+                }
+            if(shipnum==0)
+            {
+            //   Score.increaseScore(your_score*13);
+                 shipnum=27;
+                 W2=false;
+                 W3=true;
+            }
+
+            bullet1.render(renderer,bullet_x,bullet_y,bullet_size,bullet_size);
+            Wave2.render_HP_bar();
+            Wave2.ship_render(renderer);
+            Wave2.bullet_render(renderer);
+            Wave2.bullet_fire(spaceship_x,spaceship_y);
+            current_spaceship_HP = Wave2.update_current_health();
+            if(current_spaceship_HP==0)
+            {
+                bullet1.Destroy_Bullet();
+                gameover.render(renderer);
+                gameover.load_gameovermusic();
+                gameover.render_menu(renderer);
+                checkGameOver=true;
+            }
+            spaceshiphp.render(renderer,current_spaceship_HP);
+            //Score.render(renderer);
+        }
+
+/**        else if(!pause.isGamePaused()&&W3)
         {
             Wave1.Destroy_EnemyShip();
             spaceship.render(renderer);
@@ -403,7 +507,7 @@ int main(int argc, char* argv[])
             spaceshiphp.render(renderer,current_spaceship_HP);
             //Score.render(renderer);
         }
-
+**/
         SDL_RenderPresent(renderer);
     }
 

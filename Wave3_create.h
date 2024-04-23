@@ -1,19 +1,18 @@
-#ifndef WAVE2_CREATE_H_INCLUDED
-#define WAVE2_CREATE_H_INCLUDED
+/**#ifndef WAVE3_CREATE_H_INCLUDED
+#define WAVE3_CREATE_H_INCLUDED
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <bits/stdc++.h>
 
-class EnemyShip2 {
+class EnemyShip3 {
 
 public:
-    EnemyShip2();
+    EnemyShip3();
     void Destroy_EnemyShip();
 
-    void Create_enemyship_1(SDL_Renderer* renderer, const std::string& imagePath1, const std::string& imagePath2);
-    void Create_enemyship_2(SDL_Renderer* renderer, const std::string& imagePath1, const std::string& imagePath2);
+    void Create_enemyship(SDL_Renderer* renderer, const std::string& imagePath1, const std::string& imagePath2);
     void update();
 
     void ship_render(SDL_Renderer* renderer);
@@ -46,4 +45,6 @@ private:
     SDL_Color barColor[28];
 };
 
-#endif // WAVE2_CREATE_H_INCLUDED
+
+#endif // WAVE3_CREATE_H_INCLUDED
+**/
