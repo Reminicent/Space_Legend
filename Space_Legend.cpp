@@ -101,9 +101,15 @@ int main(int argc, char* argv[])
                 if (gameover.return_wave_1())
                 {
                     gameover.setting_music();
+                    loop = 0;
+                    upstatic.The_loop(loop);
+                    shipnum = 27;
                     spaceship_HP = 1000;
                     current_spaceship_HP = 1000;
                     bullet_damage=100;
+                    enemy_initial_maxHealth = 300;
+                    enemybullet_speed = 0.04;
+                    enemy_damage = 50;
                     Wave1.Destroy_EnemyShip();
                     bullet1.Destroy_Bullet();
                     spaceship.Destroy_Spaceship();
@@ -298,12 +304,13 @@ int main(int argc, char* argv[])
             {
             //   Score.increaseScore(your_score*13);
             //   shipnum=-1;
-                W1=false;     W2=true;   shipnum=18;
+                W1=false;     W2=true;   shipnum=21;
                 upstatic.The_loop(loop);
                 enemy_damage = upstatic.update_enemyship_dam(enemy_damage);
                 enemy_initial_maxHealth = upstatic.update_enemyship_hp(enemy_initial_maxHealth);
                 enemybullet_speed = upstatic.update_enemybullet_speed(enemybullet_speed);
                 Wave2.Create_enemyship_1(renderer,"ship3.png","Bullet3.png");
+                Wave2.Create_enemyship_2(renderer,"Ship6.png","bullet6.png");
                 Wave2.create_enemyship_position();
                 Wave2.create_enemybullet_position();
                 Wave2.setting_initial_heath(enemy_initial_maxHealth);
