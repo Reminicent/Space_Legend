@@ -11,9 +11,10 @@
 
 * <a name="setup"/>
 ## 1. Hướng dẫn cài đặt : 
-- Để tải về trò chơi, từ phần repositories của mình, các bạn click vào thư mục file_goc và tải về
-- Tải về SDL tại đây : , sau khi tải về các bạn 
-- Để khởi động trò chơi, từ file rar đã tải về, các bạn giải nén file
+- Để tải về trò chơi, từ phần repositories của mình, các bạn tải game về
+- Sau khi tải xong các bạn giải nén (nên chọn Extract here)
+- Lúc này game chưa thể chơi được, từ folder "Space Legend - main" các bạn copy 4 file "SDL2.dll", "SDL2_image.dll", "SDL2_mixer.dll", "SDL2_ttf.dll" vào thư mục có đường dẫn sau "Space Legend-main/file_goc/bin/Debug"
+- các bạn khởi chạy file Space_Legend.exe ở thư mục ở đường dẫn như trên là có thể chơi được
 
 * <a name="info"/>
 ## 2. Mô tả chung <br />
@@ -102,7 +103,8 @@ Game được viết bởi Huỳnh Lê Nghĩa - một trong những sinh viên t
 - Hiểu sơ sơ một số khía cạnh của lập trình hướng đối tượng: kế thừa, đa hình,...<br />
 - Hình thành tư duy xử lý và giải quyết bài toán<br />
 
-Đây cũng là tựa game đầu tay mà mình làm, cho nên trong game vẫn còn rất nhiều thiếu sót, cũng như kỹ năng lập trình của mình chưa được cao, rất mong mọi người đóng góp ý kiến và bỏ qua để mình tiếp tục hoàn thiện và cố gắng trong  thời gian sắp tới 
+Đây cũng là tựa game đầu tay mà mình làm, cho nên trong game vẫn còn rất nhiều thiếu sót, cũng như kỹ năng lập trình của mình chưa được cao, rất mong mọi người đóng góp ý kiến và bỏ qua để mình tiếp tục hoàn thiện và cố gắng trong thời gian sắp tới 
+Mình đánh giá game của mình chỉ ở mức 6/10 do tính năng còn thiếu nhiều so với yêu cầu. Tuy nhiên, nếu được nhận điểm thấp hơn hoặc cao hơn, em cũng sẽ vui vẻ chấp nhận 
 
 * <a name="thanks"/>
 ## 7. Lời cảm ơn
@@ -111,7 +113,9 @@ Mình xin cảm ơn chân thành sâu sắc đến : <br />
 - Thầy Lê Đức Trọng <br />
 - Thầy Trần Trường Thuỷ <br />
 - Anh Đặng Tiến Dũng <br />
-- Các bạn mam đẹp trai của phòng G304 <br />
+- Các bạn nam đẹp trai của phòng G304 <br />
 - Bạn Gờ Pi Tê - senior developer <br />
 - Và các bạn lớp K68-J <br />
 - ## Mình xin trân trọng cảm ơn thầy cô đã dành thời gian lắng nghe. <br />
+
+
