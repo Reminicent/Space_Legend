@@ -1,5 +1,5 @@
 # Chiến cơ huyền thoại
-### Video Demo : 
+### Video Demo : https://www.youtube.com/watch?v=C9qaxSY3WnA
 ## Các mục chính <br />
 * [Hướng dẫn cài đặt](#setup)
 * [Mô tả chung](#info)
